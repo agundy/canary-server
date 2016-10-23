@@ -7,7 +7,8 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	// "math/rand"
+	"math/rand"
+	"time"
 
 	"github.com/agundy/canary-server/database"
 )
@@ -19,19 +20,22 @@ type Project struct {
 	Token  string `gorm:"index"`
 }
 
-func (p *Project) GenerateToken() {
+// GenerateToken sets a new token for a project by randomly generating a 30
+// character alphanumeric sequence
+func (p *Project) GenerateToken(){
+	// Use seed based on time and projectID
+	rand.Seed(time.Now().UTC().UnixNano() + int64(p.UserID))
+	const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	result := make([]byte, 30)
 
+	// Generate each character
+	for i := 0; i < 30; i++ {
+		result[i] = chars[rand.Intn(len(chars))]
+	}
+
+	// Run with it
+	p.Token = string(result)
 }
-
-// Something I found on StackOverflow... should look into actual RNG in Go
-// func randSeq(n int) string {
-// 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-//     b := make([]rune, n)
-//     for i := range b {
-//         b[i] = letters[rand.Intn(len(letters))]
-//     }
-//     return string(b)
-// }
 
 // CreateProject takes a project object and sets the proper fields
 func CreateProject(p *Project) (newProject *Project, err error) {
