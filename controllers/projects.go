@@ -36,5 +36,5 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	return 
+	return
 }

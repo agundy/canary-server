@@ -19,7 +19,8 @@ func NewRouter() *mux.Router {
 		HandlerFunc(controllers.LoginHandler)
 	router.
 		Methods("POST").
-		Path("/api/projectcreate")
+		Path("/api/project").
+		HandlerFunc(controllers.CreateProjectHandler)
 
 	return router
 }
