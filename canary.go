@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/agundy/canary-server/database"
+	"github.com/agundy/canary-server/models"
 	"github.com/agundy/canary-server/router"
 )
 
@@ -13,6 +14,9 @@ func main() {
 
 	var databaseName = "canary.db"
 	database.DB = database.InitDB(databaseName)
+
+	database.DB.AutoMigrate(&models.User{})
+	database.DB.AutoMigrate(&models.Project{})
 
 	log.Println("Staring canary-server")
 	router := router.NewRouter()

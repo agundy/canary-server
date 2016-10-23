@@ -69,3 +69,20 @@ func CreateUser(u *UserSignup) (newUser *User, err error) {
 
 	return newUser, err
 }
+
+func LoginUser(u *UserSignup) (*User, error) {
+	var user *User
+	database.DB.Where(&User{Email: u.Email}).First(&user)
+
+	log.Println("Attempting login for: ", user)
+
+	if user.Email == "" {
+		log.Println("User not found")
+		return nil, errors.New("User not found")
+	}
+
+	correctPassword := user.CheckPassword(u.Password)
+
+	log.Println("Correct Password: ", correctPassword)
+	return user, nil
+}

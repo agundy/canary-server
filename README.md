@@ -24,5 +24,3 @@ go get ./...
 go build
 ./canary-server
 ```
-
-
