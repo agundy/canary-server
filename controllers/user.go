@@ -14,7 +14,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(&userSignup)
 
-	// Hanle error decoding JSON
+	// Handle error decoding JSON
 	if err != nil {
 		w.WriteHeader(400)
 		w.Write([]byte("error"))
@@ -22,8 +22,6 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, err := models.CreateUser(&userSignup)
-
-	log.Println("HIT")
 
 	if err != nil {
 		log.Println(err)
@@ -39,25 +37,33 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(500)
+	w.Write([]byte("error"))
 	return
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	type loginUser struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
+	var loginUser models.UserSignup
 
-	var user loginUser
-
+	// Attempt to read login object
 	dec := json.NewDecoder(r.Body)
-	err := dec.Decode(&user)
-
+	err := dec.Decode(&loginUser)
 	if err != nil {
+		w.WriteHeader(500)
 		w.Write([]byte("error"))
 		return
 	}
 
-	w.Write([]byte("error"))
+	log.Println("Login User: ", loginUser)
+	user, err := models.LoginUser(&loginUser)
+
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte("error"))
+		return
+	}
+
+	log.Println("Logged in User: ", user.Email)
+	w.Write([]byte("Logged In"))
 	return
 }
