@@ -71,10 +71,13 @@ func CreateUser(u *UserSignup) (newUser *User, err error) {
 }
 
 func LoginUser(u *UserSignup) (*User, error) {
-	var user *User
-	database.DB.Where(&User{Email: u.Email}).First(&user)
+	//var user *User
+	user := User{}
+	log.Println("Looking for user: ", u.Email)
+	database.DB.Where("email = ?", u.Email).Find(&user)
 
-	log.Println("Attempting login for: ", user)
+	log.Println("Found user: ", user)
+	log.Println("Attempting login for: ", u)
 
 	if user.Email == "" {
 		log.Println("User not found")
@@ -83,6 +86,9 @@ func LoginUser(u *UserSignup) (*User, error) {
 
 	correctPassword := user.CheckPassword(u.Password)
 
-	log.Println("Correct Password: ", correctPassword)
-	return user, nil
+	if correctPassword {
+		return &user, nil
+	} else {
+		return nil, errors.New("Incorrect password")
+	}
 }
