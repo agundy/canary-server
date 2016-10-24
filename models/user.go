@@ -27,7 +27,7 @@ type UserSignup struct {
 func (u *User) HashPassword(password string) {
 	bytePassword := []byte(password)
 
-	hashed, err := bcrypt.GenerateFromPassword(bytePassword, 0)
+	hashed, err := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
 	if err != nil {
 		log.Println(err)
 	}
@@ -71,13 +71,10 @@ func CreateUser(u *UserSignup) (newUser *User, err error) {
 }
 
 func LoginUser(u *UserSignup) (*User, error) {
-	//var user *User
-	user := User{}
-	log.Println("Looking for user: ", u.Email)
-	database.DB.Where("email = ?", u.Email).Find(&user)
+	log.Println("Login attempt for user: ", u.Email)
 
-	log.Println("Found user: ", user)
-	log.Println("Attempting login for: ", u)
+	user := User{}
+	database.DB.Where("email = ?", u.Email).Find(&user)
 
 	if user.Email == "" {
 		log.Println("User not found")

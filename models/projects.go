@@ -22,7 +22,7 @@ type Project struct {
 
 // GenerateToken sets a new token for a project by randomly generating a 30
 // character alphanumeric sequence
-func (p *Project) GenerateToken(){
+func (p *Project) GenerateToken() {
 	// Use seed based on time and projectID
 	rand.Seed(time.Now().UTC().UnixNano() + int64(p.UserID))
 	const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

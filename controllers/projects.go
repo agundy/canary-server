@@ -23,8 +23,6 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 
 	project, err := models.CreateProject(&projectStruct)
 
-	log.Println("PROJECT HIT")
-
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(500)
