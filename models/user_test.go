@@ -1,11 +1,13 @@
-package models
+package models_test
 
 import (
 	"testing"
+
+	"github.com/agundy/canary-server/models"
 )
 
 func TestUserHashPassword(t *testing.T) {
-	user := User{}
+	user := models.User{}
 	var password = "Password"
 
 	user.HashPassword(password)
@@ -16,7 +18,7 @@ func TestUserHashPassword(t *testing.T) {
 }
 
 func TestUserCheckPasswordSuccess(t *testing.T) {
-	user := User{}
+	user := models.User{}
 	var password = "Password"
 
 	user.HashPassword(password)
@@ -27,7 +29,7 @@ func TestUserCheckPasswordSuccess(t *testing.T) {
 }
 
 func TestUserCheckPasswordFailure(t *testing.T) {
-	user := User{}
+	user := models.User{}
 	var password = "Password"
 
 	user.HashPassword(password)

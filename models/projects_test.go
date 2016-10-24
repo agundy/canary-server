@@ -1,11 +1,13 @@
-package models
+package models_test
 
 import (
 	"testing"
+
+	"github.com/agundy/canary-server/models"
 )
 
-func TestGenerateToken(t *testing.T) {
-	project := Project{}
+func TestProjectGenerateToken(t *testing.T) {
+	project := models.Project{}
 
 	project.GenerateToken()
 

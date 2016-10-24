@@ -15,7 +15,7 @@ type User struct {
 	gorm.Model
 	Name           string `json:"name"`
 	Email          string `json:"email"`
-	HashedPassword []byte `json:"hashed_password"`
+	HashedPassword []byte `json:"-"`
 }
 
 type UserSignup struct {
