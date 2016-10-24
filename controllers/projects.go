@@ -12,11 +12,12 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	var projectStruct models.Project
 
 	dec := json.NewDecoder(r.Body)
+	log.Println(r.Body)
 	err := dec.Decode(&projectStruct)
 
 	if err != nil {
 		w.WriteHeader(400)
-		w.Write([]byte("error"))
+		w.Write([]byte("Error decoding JSON"))
 		return
 	}
 

@@ -16,7 +16,7 @@ import (
 type Project struct {
 	gorm.Model
 	Name   string `json:"name"`
-	UserID uint   `gorm:"index"`
+	UserID uint   `json:"user_id";gorm:"index"`
 	Token  string `gorm:"index"`
 }
 
