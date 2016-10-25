@@ -24,3 +24,24 @@ go get ./...
 go build
 ./canary-server
 ```
+
+Testing
+-------
+
+Testing the project is as easy as running:
+```
+go test ./...
+```
+
+Or to just test models: 
+
+```
+go test ./models
+```
+
+To test just user or project model tests:
+
+```
+go test ./models -run 'User' 
+go test ./models -run 'Project' 
+```

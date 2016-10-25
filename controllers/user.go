@@ -32,8 +32,14 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Println("Created User: ", user.Email)
 
+		jsonUser, err := json.Marshal(user)
+		if err != nil {
+			log.Println(err)
+		}
+
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte("success"))
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonUser)
 		return
 	}
 

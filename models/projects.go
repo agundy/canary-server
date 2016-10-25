@@ -1,7 +1,6 @@
 package models
 
 import (
-	// "fmt"
 	"errors"
 	"log"
 
@@ -22,7 +21,7 @@ type Project struct {
 
 // GenerateToken sets a new token for a project by randomly generating a 30
 // character alphanumeric sequence
-func (p *Project) GenerateToken(){
+func (p *Project) GenerateToken() {
 	// Use seed based on time and projectID
 	rand.Seed(time.Now().UTC().UnixNano() + int64(p.UserID))
 	const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -61,6 +60,7 @@ func CreateProject(p *Project) (newProject *Project, err error) {
 
 	return newProject, err
 }
+<<<<<<< HEAD
 
 func DeleteProject(p *Project) (result *string, err error) {
 	var queryProject Project
@@ -74,3 +74,5 @@ func DeleteProject(p *Project) (result *string, err error) {
 	return string("project delected"), err
 
 }
+=======
+>>>>>>> 21715dc0d901f5d7deb2821ba0d7f2b5bf473fb8
