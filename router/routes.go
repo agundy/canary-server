@@ -23,7 +23,7 @@ func NewRouter() *mux.Router {
 		HandlerFunc(controllers.CreateProjectHandler)
 	router.
 		Methods("POST").
-		Path("/api/delproject")
+		Path("/api/delproject").
 		HandlerFunc(controllers.DeleteProjectHandler)
 
 	return router

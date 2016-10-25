@@ -60,19 +60,16 @@ func CreateProject(p *Project) (newProject *Project, err error) {
 
 	return newProject, err
 }
-<<<<<<< HEAD
 
-func DeleteProject(p *Project) (result *string, err error) {
-	var queryProject Project
+func DeleteProject(p *Project) (result string, err error) {
 
 	if p.Name == "" {
 		log.Println("Project name can't be blank")
-		return nil, errors.New("Projectname can't be blank")
+		return "ERROR", errors.New("Projectname can't be blank")
 	}
 
-	log.Println(database.DB.Delete(&Project{Name: p.Name}))
-	return string("project delected"), err
+	database.DB.Delete(&Project{Name: p.Name})
+	rs := string("project \"") + p.Name + string("\" deleted")
+	return rs, err
 
 }
-=======
->>>>>>> 21715dc0d901f5d7deb2821ba0d7f2b5bf473fb8

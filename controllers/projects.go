@@ -59,7 +59,7 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result err := models.DeleteProject(&projectStruct)
+	result, err := models.DeleteProject(&projectStruct)
 
 	log.Println("PROJECT DELETE HIT")
 
@@ -69,7 +69,8 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error deleting project"))
 		return
 	} else {
-		//send confirmation string that project has been deleted
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(result))
 		return
 	}
 	
