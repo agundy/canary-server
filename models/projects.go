@@ -14,7 +14,7 @@ import (
 )
 
 type Project struct {
-	gorm.Model
+	gorm.Model 	  `json:"-"`
 	Name   string `json:"name"`
 	UserID uint   `json:"user_id";gorm:"index"`
 	Token  string `gorm:"index"`
@@ -60,4 +60,17 @@ func CreateProject(p *Project) (newProject *Project, err error) {
 	database.DB.Create(&newProject)
 
 	return newProject, err
+}
+
+func DeleteProject(p *Project) (result *string, err error) {
+	var queryProject Project
+
+	if p.Name == "" {
+		log.Println("Project name can't be blank")
+		return nil, errors.New("Projectname can't be blank")
+	}
+
+	log.Println(database.DB.Delete(&Project{Name: p.Name}))
+	return string("project delected"), err
+
 }
