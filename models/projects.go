@@ -37,7 +37,8 @@ func (p *Project) GenerateToken() {
 	p.Token = string(result)
 }
 
-// CreateProject takes a project object and sets the proper fields
+// CreateProject takes a project object, sets the proper fields then
+// stores it in the database
 func CreateProject(p *Project) (newProject *Project, err error) {
 	var queryProject Project
 
@@ -54,27 +55,32 @@ func CreateProject(p *Project) (newProject *Project, err error) {
 		return nil, errors.New("Project already exists")
 	}
 
+	// Create a new Project object and generate its API token
 	newProject = &Project{Name: p.Name, UserID: p.UserID}
 	newProject.GenerateToken()
 
+	//Store the new project in the database
 	database.DB.Create(&newProject)
 
 	return newProject, err
 }
 
+// DeleteProject takes a project ID and attempts to delete the corresponding
+// project from the database
 func DeleteProject(id int) (result string, err error) {
 
+	// Check that the project is in the database
 	project := Project{}
 	log.Println(id)
-	database.DB.Where("id = ", id).Find(&project)
-	log.Println("Error point")
+	database.DB.Where("id = ?", id).Find(&project)
 	if project.Name == "" {
 		log.Println("Project not found")
 		return "ERROR", errors.New("Project not found")
 	}
 
-	database.DB.Where("id = ", id).Delete(Project{})
-	rs := string("Project \"") + strconv.Itoa(id) + string("\" deleted")
+	// Delete the project
+	database.DB.Where("id = ?", id).Delete(Project{})
+	rs := string("Project ID=") + strconv.Itoa(id) + string(" deleted")
 	return rs, err
 
 }

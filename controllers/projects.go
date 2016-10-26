@@ -13,57 +13,54 @@ import (
 
 )
 
+// CreateProjectHandler takes a http reuqest containing JSON encoded project
+// information and attempts to create a new project in the database with
+// this information
 func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	var projectStruct models.Project
 
+	// Obtain project info from JSON
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(&projectStruct)
-
 	if err != nil {
 		w.WriteHeader(400)
 		w.Write([]byte("Error decoding JSON"))
 		return
 	}
 
+	// Attempt to create the project in the database
 	project, err := models.CreateProject(&projectStruct)
-
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(500)
 		w.Write([]byte("Error creating project"))
 		return
-	} else {
-		rs, err := json.Marshal(project)
-		if err != nil {
-			log.Print(err)
-			w.WriteHeader(500)
-			w.Write([]byte("Error creating project"))
-			return
-		}
+	}
 
-		log.Println("Created Project: ", project.Name)
-
-		w.WriteHeader(http.StatusCreated)
-		m := []byte("Created project: ")
-		m = append(m, rs...)
-		w.Write(m)
+	// Attempt to create JSON encoded project info, then send a response
+	rs, err := json.Marshal(project)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(500)
+		w.Write([]byte("Error Marshalling project info to JSON"))
 		return
 	}
+
+	log.Println("Created Project: ", project.Name)
+
+	w.WriteHeader(http.StatusCreated)
+	m := []byte("Created project: ")
+	m = append(m, rs...)
+	w.Write(m)
+	return
 
 	return
 }
 
+// DeleteProjectHander takes a http request containing a project ID
+// and attempts to remove the corresponding project from the database
 func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
-
-	// dec := json.NewDecoder(r.Body)
-	// err := dec.Decode(&projectStruct)
-
-	// if err != nil {
-	// 	w.WriteHeader(400)
-	// 	w.Write([]byte("Error decoding JSON"))
-	// 	return
-	// }
-
+	// Use mux to obtain the ID as an int
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -73,9 +70,10 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Attempt to delete the project 
 	result, err := models.DeleteProject(id)
 
-
+	// Send response with success or failure info
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(500)
@@ -91,21 +89,21 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+
 func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
-	var projectStruct models.Project
-
-	dec := json.NewDecoder(r.Body)
-	err := dec.Decode(&projectStruct)
-
+	// Use mux to obtain the ID as an int
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(400)
-		w.Write([]byte("Error decoding JSON"))
+		w.Write([]byte("Bad project ID"))
 		return
 	}
 
 	project := models.Project{}
-	log.Println(projectStruct.ID)
-	database.DB.Where("ID = ?", projectStruct.ID).
+	log.Println(id)
+	database.DB.Where("id = ?", id).
 			   First(&project)
 	if project.Name == "" {
 		log.Println("Project not found")
@@ -115,14 +113,11 @@ func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	project.GenerateToken()
-	database.DB.Update("token", project.Token)
+	database.DB.Model(&project).Update("token", project.Token)
 
-	// if err != {
-	// 	//error handling
-	// } else {
-		log.Println("TOKEN REGENERATION HIT")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(project.Token))
+	log.Println("TOKEN REGENERATION HIT")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(project.Token))
 	// 	//write response
 	// }
 }
