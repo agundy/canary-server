@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"log"
+	"strconv"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -61,15 +62,19 @@ func CreateProject(p *Project) (newProject *Project, err error) {
 	return newProject, err
 }
 
-func DeleteProject(p *Project) (result string, err error) {
+func DeleteProject(id int) (result string, err error) {
 
-	if p.Name == "" {
-		log.Println("Project name can't be blank")
-		return "ERROR", errors.New("Projectname can't be blank")
+	project := Project{}
+	log.Println(id)
+	database.DB.Where("id = ", id).Find(&project)
+	log.Println("Error point")
+	if project.Name == "" {
+		log.Println("Project not found")
+		return "ERROR", errors.New("Project not found")
 	}
 
-	database.DB.Delete(&Project{Name: p.Name})
-	rs := string("project \"") + p.Name + string("\" deleted")
+	database.DB.Where("id = ", id).Delete(Project{})
+	rs := string("Project \"") + strconv.Itoa(id) + string("\" deleted")
 	return rs, err
 
 }

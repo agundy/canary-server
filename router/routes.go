@@ -22,9 +22,13 @@ func NewRouter() *mux.Router {
 		Path("/api/project").
 		HandlerFunc(controllers.CreateProjectHandler)
 	router.
-		Methods("POST").
-		Path("/api/delproject").
+		Methods("DELETE").
+		Path("/api/project/{id:[0-9]+}").
 		HandlerFunc(controllers.DeleteProjectHandler)
+	router.
+		Methods("PUT").
+		Path("/api/project/{id:[0-9]+}/regentoken").
+		HandlerFunc(controllers.RegenerateHandler)
 
 	return router
 }
