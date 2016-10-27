@@ -17,6 +17,7 @@ func main() {
 
 	database.DB.AutoMigrate(&models.User{})
 	database.DB.AutoMigrate(&models.Project{})
+	database.DB.AutoMigrate(&models.Event{})
 
 	log.Println("Staring canary-server")
 	router := router.NewRouter()
