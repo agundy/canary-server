@@ -89,7 +89,9 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-
+// RegenerateHandler takes an http request containing a project ID
+// and attempts to create a new API token for the project and save the
+// changes in the database
 func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
 	// Use mux to obtain the ID as an int
 	vars := mux.Vars(r)
@@ -101,6 +103,7 @@ func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check for the project in the database
 	project := models.Project{}
 	log.Println(id)
 	database.DB.Where("id = ?", id).
@@ -112,12 +115,12 @@ func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Generate the new token and save the change to the databse
 	project.GenerateToken()
 	database.DB.Model(&project).Update("token", project.Token)
 
+	// Send response with success info
 	log.Println("TOKEN REGENERATION HIT")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(project.Token))
-	// 	//write response
-	// }
 }
