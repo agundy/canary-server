@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
@@ -44,7 +45,30 @@ func (u *User) CheckPassword(password string) bool {
 	// Check a password; err == nil if password is correct
 	err := bcrypt.CompareHashAndPassword(u.HashedPassword, bytePassword)
 	return (err == nil)
+}
 
+func (u *User) CheckAuthToken() (tokenString string) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	token.Claims["email"] = u.Email
+	token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	// Sign the JWT with the server secret
+	tokenString, _ = token.SignedString(ApiSecret)
+
+	return tokenString
+}
+
+func (u *User) GetAuthToken() (tokenString string) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	token.Claims["email"] = u.Email
+	token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	// Sign the JWT with the server secret
+	tokenString, _ = token.SignedString(ApiSecret)
+
+	return tokenString
 }
 
 // CreateUser takes a user object and sets the proper fields
