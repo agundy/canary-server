@@ -2,22 +2,18 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"	
+	"log"
 	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 
 	"github.com/agundy/canary-server/models"
-	"github.com/agundy/canary-server/database"
-
 )
 
 // StoreEventHandler takes a htp request containing JSON encoded Event
-// information and attempts to create a new Event in the database with 
+// information and attempts to create a new Event in the database with
 // this information
 func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 	var incEvent models.Event
+	log.Println("Processing event: ", r.Body)
 
 	// Obtain Event info from JSON
 	dec := json.NewDecoder(r.Body)
@@ -29,11 +25,15 @@ func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Attempt to store the Event in the database
-	Event, err := models.StoreEvent(incEvent)
+	event, err := models.StoreEvent(&incEvent)
 	if err != nil {
-
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	log.Println("Created new event: ", event.ID)
+
 	// Send an awknowledge response
+	w.WriteHeader(http.StatusCreated)
+	return
 }
