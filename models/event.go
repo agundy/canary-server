@@ -13,19 +13,19 @@ import (
 
 type Event struct {
 	gorm.Model
-	Host string `json:"host"`
-	Code int `json:"code"`
-	Duration int `json:"duration"`
-	Endpoint string `json:"endpont"`
-	ProjectID int `json:"project_id"`
-	ProjectToken string `json:"token"`
-	Timestamp time `json:"timestamp"`
+	Host         string    `json:"host"`
+	Code         int       `json:"code"`
+	Duration     int       `json:"duration"`
+	Endpoint     string    `json:"endpont"`
+	ProjectID    int       `json:"project_id"`
+	ProjectToken string    `json:"token"`
+	Timestamp    time.Time `json:"timestamp"`
 }
 
 func StoreEvent(e *Event) (newEvent *Event, err error) {
-	if .Host == "" || e.ProjectToken == "" {
-		log.Println("Event must contain Host" + 
-			" and Endpoint info as well as an API Token")		
+	if e.Host == "" || e.ProjectToken == "" {
+		log.Println("Event must contain Host" +
+			" and Endpoint info as well as an API Token")
 	}
 
 	var targetProject Project
@@ -36,8 +36,8 @@ func StoreEvent(e *Event) (newEvent *Event, err error) {
 	}
 
 	newEvent = &Event{Host: e.Host, Code: e.Code, Duration: e.Duration,
-						Endpoint: e.Endpoint, ProjectID: e.ProjectID,
-						ProjectToken: e.ProjectToken, Timestamp: e.Timestamp}
+		Endpoint: e.Endpoint, ProjectID: e.ProjectID,
+		ProjectToken: e.ProjectToken, Timestamp: e.Timestamp}
 
 	database.DB.Create(&newEvent)
 
