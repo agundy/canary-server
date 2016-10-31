@@ -14,10 +14,10 @@ import (
 )
 
 type Project struct {
-	gorm.Model 	  `json:"-"`
-	Name   string `json:"name"`
-	UserID uint   `json:"user_id";gorm:"index"`
-	Token  string `gorm:"index"`
+	gorm.Model `json:"-"`
+	Name       string `json:"name"`
+	UserID     uint   `json:"user_id";gorm:"index"`
+	Token      string `gorm:"index"`
 }
 
 // GenerateToken sets a new token for a project by randomly generating a 30
