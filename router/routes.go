@@ -29,6 +29,10 @@ func NewRouter() *mux.Router {
 		Methods("PUT").
 		Path("/api/project/{id:[0-9]+}/regentoken").
 		HandlerFunc(controllers.RegenerateHandler)
+	router.
+		Methods("PUT").
+		Path("/api/project/{id:[0-9]+}/storeevent").
+		HandlerFunc(controllers.StoreEventHandler)
 
 	return router
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/agundy/canary-server/models"
 )
 
-// StoreEventHandler takes a htp request containing JSON encoded Event
+// StoreEventHandler takes a http request containing JSON encoded Event
 // information and attempts to create a new Event in the database with
 // this information
 func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +19,7 @@ func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(&incEvent)
 	if err != nil {
-		w.WriteHeader(400)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error decoding JSON"))
 		return
 	}

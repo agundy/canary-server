@@ -26,13 +26,15 @@ func StoreEvent(e *Event) (newEvent *Event, err error) {
 	if e.Host == "" || e.ProjectToken == "" {
 		log.Println("Event must contain Host" +
 			" and Endpoint info as well as an API Token")
+		return nil, errors.New("No host, endpoint, or token information")
 	}
 
 	var targetProject Project
-	database.DB.Where("token = ?", e.ProjectToken).First(&targetProject)
-	if targetProject.Name != "" {
-		log.Println("No project found with token: %s", e.ProjectToken)
-		return nil, errors.New("No project found with provided token")
+	database.DB.Where("token = ? AND id = ?", e.ProjectToken, e.ProjectID).First(&targetProject)
+	log.Println(targetProject.Name, targetProject.ID)
+	if targetProject.Name == "" && targetProject.ID == 0 {
+		log.Println("No project found with the following ID and Token:", e.ProjectID, e.ProjectToken)
+		return nil, errors.New("Project ID and Token do not match")
 	}
 
 	newEvent = &Event{Host: e.Host, Code: e.Code, Duration: e.Duration,
