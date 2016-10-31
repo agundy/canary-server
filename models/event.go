@@ -22,13 +22,17 @@ type Event struct {
 	Timestamp    time.Time `json:"timestamp"`
 }
 
+// StoreEvent takes an event object, verifies that the token matches the correct
+// ProjectID, then sets the proper fields and stores it in the database
 func StoreEvent(e *Event) (newEvent *Event, err error) {
-	if e.Host == "" || e.ProjectToken == "" {
+	// Check the event has host, endpoint, and project token
+	if e.Host == "" || e.Endpoint == "" || e.ProjectToken == "" {
 		log.Println("Event must contain Host" +
 			" and Endpoint info as well as an API Token")
 		return nil, errors.New("No host, endpoint, or token information")
 	}
 
+	// Verify that the provided token matches the specified project
 	var targetProject Project
 	database.DB.Where("token = ? AND id = ?", e.ProjectToken, e.ProjectID).First(&targetProject)
 	log.Println(targetProject.Name, targetProject.ID)
@@ -37,10 +41,12 @@ func StoreEvent(e *Event) (newEvent *Event, err error) {
 		return nil, errors.New("Project ID and Token do not match")
 	}
 
+	// Create the event to be stored
 	newEvent = &Event{Host: e.Host, Code: e.Code, Duration: e.Duration,
 		Endpoint: e.Endpoint, ProjectID: e.ProjectID,
 		ProjectToken: e.ProjectToken, Timestamp: e.Timestamp}
 
+	// Store the new event in the database
 	database.DB.Create(&newEvent)
 
 	return newEvent, err
