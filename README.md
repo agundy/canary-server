@@ -3,6 +3,10 @@ Canary-Server
 
 Canary server is the Go backend for Canary, an ambient monitoring solution.
 
+Test Status
+===========
+[![Build Status](https://travis-ci.org/agundy/canary-server.svg?branch=master)](https://travis-ci.org/agundy/canary-server)
+
 Getting Started
 =============== 
 

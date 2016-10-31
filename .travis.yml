@@ -1,0 +1,6 @@
+language: go
+services:
+    - postgresql
+before_script:
+    - psql -c "CREATE USER gorm WITH PASSWORD 'mypassword';" -U postgres
+    - psql -c "CREATE DATABASE \"canary-test\" OWNER gorm;" -U postgres
