@@ -2,15 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"	
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
 
-	"github.com/agundy/canary-server/models"
 	"github.com/agundy/canary-server/database"
-
+	"github.com/agundy/canary-server/models"
 )
 
 // CreateProjectHandler takes a http reuqest containing JSON encoded project
@@ -70,7 +69,7 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Attempt to delete the project 
+	// Attempt to delete the project
 	result, err := models.DeleteProject(id)
 
 	// Send response with success or failure info
@@ -80,12 +79,12 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error deleting project"))
 		return
 	} else {
-		log.Println("PROJECT DELETE HIT")	
+		log.Println("PROJECT DELETE HIT")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(result))
 		return
 	}
-	
+
 	return
 }
 
@@ -107,7 +106,7 @@ func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
 	project := models.Project{}
 	log.Println(id)
 	database.DB.Where("id = ?", id).
-			   First(&project)
+		First(&project)
 	if project.Name == "" {
 		log.Println("Project not found")
 		w.WriteHeader(404)
