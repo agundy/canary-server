@@ -93,6 +93,26 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+/// GetProjectHandler return a list of the projects a user has
+func GetProjectsHandler(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+	user = context.Get(r, config.RequestUser).(models.User)
+	var projects []models.Project
+
+	database.DB.Where("user_id = ?", user.ID).Find(&projects)
+	jsonProjects, err := json.Marshal(projects)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Error Marshalling project info to JSON"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonProjects)
+	return
+}
+
 // RegenerateHandler takes an http request containing a project ID
 // and attempts to create a new API token for the project and save the
 // changes in the database

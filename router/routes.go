@@ -52,6 +52,10 @@ func NewRouter() *mux.Router {
 		Path("/api/login").
 		HandlerFunc(controllers.LoginHandler)
 	router.
+		Methods("GET").
+		Path("/api/project").
+		Handler(AuthMiddleware(controllers.GetProjectsHandler))
+	router.
 		Methods("POST").
 		Path("/api/project").
 		Handler(AuthMiddleware(controllers.CreateProjectHandler))
