@@ -24,6 +24,8 @@ type UserSignup struct {
 	Password string `json:"password"`
 }
 
+// HashPassword takes a new user's password and hashes it, so that it may be
+// securely stored in the database
 func (u *User) HashPassword(password string) {
 	bytePassword := []byte(password)
 
@@ -35,6 +37,8 @@ func (u *User) HashPassword(password string) {
 	u.HashedPassword = hashed
 }
 
+// CheckPassword takes a submitted password and checks that its hash value
+// matches the one stored in the database for the corresponding user
 func (u *User) CheckPassword(password string) bool {
 	bytePassword := []byte(password)
 	// Check a password; err == nil if password is correct
@@ -70,9 +74,12 @@ func CreateUser(u *UserSignup) (newUser *User, err error) {
 	return newUser, err
 }
 
+// LoginUser takes a UserSinup struct with an email and a submitted password,
+// then tries to find a correpsonding user and verfy the password
 func LoginUser(u *UserSignup) (*User, error) {
 	log.Println("Login attempt for user: ", u.Email)
 
+	// try to find a user with the email given in the database
 	user := User{}
 	database.DB.Where("email = ?", u.Email).Find(&user)
 
@@ -81,11 +88,12 @@ func LoginUser(u *UserSignup) (*User, error) {
 		return nil, errors.New("User not found")
 	}
 
+	// Verify the password given is correct
 	correctPassword := user.CheckPassword(u.Password)
 
 	if correctPassword {
 		return &user, nil
-	} else {
-		return nil, errors.New("Incorrect password")
 	}
+
+	return nil, errors.New("Incorrect password")
 }

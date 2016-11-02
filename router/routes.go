@@ -6,6 +6,9 @@ import (
 	"github.com/agundy/canary-server/controllers"
 )
 
+// The router is responsible for maintianing API endpoints and passing
+// off incoming HTTP requests to their appropriate handler functions.
+// NewRouter creates such a router and adds appropriate endpoints.
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
