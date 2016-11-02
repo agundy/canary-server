@@ -71,6 +71,9 @@ func NewRouter() *mux.Router {
 		Methods("POST").
 		Path("/api/project/{id:[0-9]+}/event").
 		HandlerFunc(controllers.EventHandler)
+	router.
+		PathPrefix("/").
+		Handler(http.FileServer(http.Dir("./canary-client/client/")))
 
 	return router
 }
