@@ -14,10 +14,6 @@ import (
 	"github.com/agundy/canary-server/models"
 )
 
-type key int
-
-const User key = 0
-
 func AuthMiddleware(next http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Get jwt authorization header
@@ -30,7 +26,7 @@ func AuthMiddleware(next http.HandlerFunc) http.Handler {
 			user := models.User{}
 			database.DB.Where("email = ?", token.Claims["email"]).Find(&user)
 			log.Println("Query")
-			context.Set(r, User, user.ID)
+			context.Set(r, config.RequestUser, user)
 			log.Println("Set context")
 			next(w, r)
 		} else {

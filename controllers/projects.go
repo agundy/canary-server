@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 
+	"github.com/agundy/canary-server/config"
 	"github.com/agundy/canary-server/database"
 	"github.com/agundy/canary-server/models"
 )
@@ -17,7 +18,7 @@ import (
 // information and attempts to create a new project in the database with
 // this information
 func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
-	val := context.Get(r, "user")
+	val := context.Get(r, config.RequestUser)
 	log.Println(val)
 
 	var projectStruct models.Project
