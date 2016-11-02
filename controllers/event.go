@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 
 	"github.com/agundy/canary-server/models"
 )
@@ -35,5 +38,44 @@ func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Send an awknowledge response
 	w.WriteHeader(http.StatusCreated)
+	return
+}
+
+func EventHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	projectID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Bad project ID"))
+		return
+	}
+
+	var eventID models.EventID
+	dec := json.NewDecoder(r.Body)
+	decErr := dec.Decode(&eventID)
+	if decErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error decoding JSON"))
+		return
+	}
+
+	event := models.GetEvent(projectID, eventID)
+	log.Println(event)
+	if event != nil {
+		rs, marshErr := json.Marshal(event)
+		if marshErr != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Error Marshalling event to JSON"))
+			return
+		}
+
+		log.Println("Event retrieved")
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(rs)
+		return
+	}
 	return
 }

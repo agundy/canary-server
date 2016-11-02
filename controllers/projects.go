@@ -22,7 +22,7 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(&projectStruct)
 	if err != nil {
-		w.WriteHeader(400)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error decoding JSON"))
 		return
 	}
@@ -31,7 +31,7 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	project, err := models.CreateProject(&projectStruct)
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Error creating project"))
 		return
 	}
@@ -39,8 +39,8 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	// Attempt to create JSON encoded project info, then send a response
 	rs, err := json.Marshal(project)
 	if err != nil {
-		log.Print(err)
-		w.WriteHeader(500)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Error Marshalling project info to JSON"))
 		return
 	}
@@ -51,8 +51,6 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	m := []byte("Created project: ")
 	m = append(m, rs...)
 	w.Write(m)
-	return
-
 	return
 }
 

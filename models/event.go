@@ -12,7 +12,7 @@ import (
 )
 
 type Event struct {
-	gorm.Model
+	gorm.Model            `json:"-"`
 	Host         string    `json:"host"`
 	Code         int       `json:"code"`
 	Duration     int       `json:"duration"`
@@ -20,6 +20,10 @@ type Event struct {
 	ProjectID    int       `json:"project_id"`
 	ProjectToken string    `json:"token"`
 	Timestamp    time.Time `json:"timestamp"`
+}
+
+type EventID struct {
+	id int `json:"event_id"`
 }
 
 // StoreEvent takes an event object, verifies that the token matches the correct
@@ -50,4 +54,23 @@ func StoreEvent(e *Event) (newEvent *Event, err error) {
 	database.DB.Create(&newEvent)
 
 	return newEvent, err
+}
+
+func GetEvent(projectID int, eventID EventID) (e *Event) {
+	event := Event{}
+	database.DB.Last(&event)
+	log.Println(event.Model.ID)
+	// Conditions separated for debugging purposes
+	if event.Model.ID < 1 {
+		return nil
+	}
+	if int(event.Model.ID) == eventID.id {
+		return nil
+	}
+	log.Println(event.ProjectID, projectID)
+	if event.ProjectID != projectID {
+		return nil
+	}
+	log.Println("HERE")
+	return &event
 }

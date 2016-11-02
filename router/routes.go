@@ -33,6 +33,10 @@ func NewRouter() *mux.Router {
 		Methods("PUT").
 		Path("/api/project/{id:[0-9]+}/storeevent").
 		HandlerFunc(controllers.StoreEventHandler)
+	router.
+		Methods("POST").
+		Path("/api/project/{id:[0-9]+}/event").
+		HandlerFunc(controllers.EventHandler)
 
 	return router
 }
