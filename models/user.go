@@ -3,12 +3,14 @@ package models
 import (
 	"errors"
 	"log"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/agundy/canary-server/config"
 	"github.com/agundy/canary-server/database"
 )
 
@@ -54,7 +56,7 @@ func (u *User) CheckAuthToken() (tokenString string) {
 	token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	// Sign the JWT with the server secret
-	tokenString, _ = token.SignedString(ApiSecret)
+	tokenString, _ = token.SignedString(config.ApiSecret)
 
 	return tokenString
 }
@@ -66,7 +68,11 @@ func (u *User) GetAuthToken() (tokenString string) {
 	token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	// Sign the JWT with the server secret
-	tokenString, _ = token.SignedString(ApiSecret)
+	tokenString, err := token.SignedString([]byte(config.ApiSecret))
+
+	if err != nil {
+		log.Println("Error: ", err)
+	}
 
 	return tokenString
 }

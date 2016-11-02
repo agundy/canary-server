@@ -4,17 +4,14 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/agundy/canary-server/config"
 	"github.com/agundy/canary-server/database"
 	"github.com/agundy/canary-server/models"
 	"github.com/agundy/canary-server/router"
 )
 
-var (
-	ApiSecret = "SECRET"
-)
-
 func initDatabase() {
-	var databaseName = "canary.db"
+	var databaseName = config.DatabaseName
 	database.DB = database.InitDB(databaseName)
 
 	database.DB.AutoMigrate(&models.User{})
@@ -22,16 +19,10 @@ func initDatabase() {
 	database.DB.AutoMigrate(&models.Event{})
 }
 
-// loadEnv gets secrets and other variables from the environment
-func loadEnv() {
-	envApiSecret := os.Getenv("CANARY_API_SECRET")
-	if len(envApiSecret) > 0 {
-		ApiSecret = envApiSecret
-	}
-}
-
 func main() {
-	log.Println("Connecting to the Database")
+	config.LoadEnv()
+
+	log.Println("Connecting to the Database:", config.DatabaseName)
 	initDatabase()
 
 	log.Println("Staring canary-server")
