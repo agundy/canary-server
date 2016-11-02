@@ -29,6 +29,7 @@ func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Attempt to store the Event in the database
 	event, err := models.StoreEvent(&incEvent)
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -53,7 +54,6 @@ func EventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	event := models.GetEvent(projectID, eventID)
-	log.Println(event)
 	if event != nil {
 		rs, marshErr := json.Marshal(event)
 		if marshErr != nil {

@@ -14,6 +14,7 @@ import (
 	"github.com/agundy/canary-server/models"
 )
 
+// AuthMiddleware 
 func AuthMiddleware(next http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Get jwt authorization header
@@ -25,9 +26,8 @@ func AuthMiddleware(next http.HandlerFunc) http.Handler {
 			log.Println(token.Claims)
 			user := models.User{}
 			database.DB.Where("email = ?", token.Claims["email"]).Find(&user)
-			log.Println("Query")
 			context.Set(r, config.RequestUser, user)
-			log.Println("Set context")
+			log.Println("Authorization context set")
 			next(w, r)
 		} else {
 			w.WriteHeader(http.StatusUnauthorized)

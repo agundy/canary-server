@@ -71,7 +71,6 @@ func DeleteProject(id int, userID uint) (result string, err error) {
 
 	// Check that the project is in the database
 	project := Project{}
-	log.Println(id)
 	database.DB.Where("id = ?", id).Find(&project)
 	if project.Name == "" {
 		log.Println("Project not found")

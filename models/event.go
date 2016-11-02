@@ -28,7 +28,7 @@ func StoreEvent(e *Event) (newEvent *Event, err error) {
 	// Check the event has host, endpoint, and project token
 	if e.Host == "" || e.Endpoint == "" || e.ProjectToken == "" {
 		log.Println("Event must contain Host" +
-			" and Endpoint info as well as an API Token")
+			" and Endpoint info, as well as an API Token")
 		return nil, errors.New("No host, endpoint, or token information")
 	}
 
@@ -55,7 +55,6 @@ func StoreEvent(e *Event) (newEvent *Event, err error) {
 func GetEvent(projectID int, eventID int) (e *Event) {
 	event := Event{}
 	database.DB.Last(&event)
-	log.Println(event.Model.ID)
 	// Conditions separated for debugging purposes
 	if event.Model.ID < 1 {
 		return nil
@@ -63,10 +62,8 @@ func GetEvent(projectID int, eventID int) (e *Event) {
 	if int(event.Model.ID) == eventID {
 		return nil
 	}
-	log.Println(event.ProjectID, projectID)
 	if event.ProjectID != projectID {
 		return nil
 	}
-	log.Println("HERE")
 	return &event
 }

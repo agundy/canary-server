@@ -37,12 +37,12 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error creating user"))
 		return
 	} else {
-		log.Println("Created User: ", user.Email)
-
 		jsonUser, err := json.Marshal(user)
 		if err != nil {
 			log.Println(err)
 		}
+
+		log.Println("Created User: ", user.Email)
 
 		w.WriteHeader(http.StatusCreated)
 		w.Header().Set("Content-Type", "application/json")
@@ -70,7 +70,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Attempt to login with information
-	log.Println("Login User: ", loginUser)
 	user, err := models.LoginUser(&loginUser)
 
 	if err != nil {

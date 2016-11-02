@@ -27,6 +27,7 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(&projectStruct)
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error decoding JSON"))
 		return
@@ -36,6 +37,7 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Attempt to create the project in the database
 	project, err := models.CreateProject(&projectStruct)
+
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -70,7 +72,7 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(400)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Bad project ID"))
 		return
 	}
@@ -80,11 +82,11 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Send response with success or failure info
 	if err != nil {
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Error deleting project"))
 		return
 	} else {
-		log.Println("PROJECT DELETE HIT")
+		log.Println("Deleted Project:", id)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(result))
 		return
@@ -122,19 +124,18 @@ func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(400)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Bad project ID"))
 		return
 	}
 
 	// Check for the project in the database
 	project := models.Project{}
-	log.Println(id)
 	database.DB.Where("id = ?", id).
 		First(&project)
 	if project.Name == "" {
 		log.Println("Project not found")
-		w.WriteHeader(404)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Project not found"))
 		return
 	}
@@ -144,7 +145,7 @@ func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
 	database.DB.Model(&project).Update("token", project.Token)
 
 	// Send response with success info
-	log.Println("TOKEN REGENERATION HIT")
+	log.Println("Regenerated token for Project:", id)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(project.Token))
 }
