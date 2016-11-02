@@ -29,7 +29,7 @@ type UserSignup struct {
 
 // HashPassword takes a new user's password and hashes it, so that it may be
 // securely stored in the database
-func (u *User) HashPassword(password string) {
+func (u *User) hashPassword(password string) {
 	bytePassword := []byte(password)
 
 	hashed, err := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
@@ -42,7 +42,7 @@ func (u *User) HashPassword(password string) {
 
 // CheckPassword takes a submitted password and checks that its hash value
 // matches the one stored in the database for the corresponding user
-func (u *User) CheckPassword(password string) bool {
+func (u *User) checkPassword(password string) bool {
 	bytePassword := []byte(password)
 	// Check a password; err == nil if password is correct
 	err := bcrypt.CompareHashAndPassword(u.HashedPassword, bytePassword)
@@ -97,7 +97,7 @@ func CreateUser(u *UserSignup) (newUser *User, err error) {
 
 	newUser = &User{Name: u.Name, Email: u.Email}
 
-	newUser.HashPassword(u.Password)
+	newUser.hashPassword(u.Password)
 
 	database.DB.Create(&newUser)
 
@@ -119,7 +119,7 @@ func LoginUser(u *UserSignup) (*User, error) {
 	}
 
 	// Verify the password given is correct
-	correctPassword := user.CheckPassword(u.Password)
+	correctPassword := user.checkPassword(u.Password)
 
 	if correctPassword {
 		return &user, nil
