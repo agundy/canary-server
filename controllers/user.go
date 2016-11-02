@@ -80,6 +80,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Logged in User: ", user.Email)
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Logged In"))
+	w.Write([]byte(user.GetAuthToken()))
 	return
 }

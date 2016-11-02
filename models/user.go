@@ -3,11 +3,14 @@ package models
 import (
 	"errors"
 	"log"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/agundy/canary-server/config"
 	"github.com/agundy/canary-server/database"
 )
 
@@ -44,7 +47,34 @@ func (u *User) CheckPassword(password string) bool {
 	// Check a password; err == nil if password is correct
 	err := bcrypt.CompareHashAndPassword(u.HashedPassword, bytePassword)
 	return (err == nil)
+}
 
+func (u *User) CheckAuthToken() (tokenString string) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	token.Claims["email"] = u.Email
+	token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	// Sign the JWT with the server secret
+	tokenString, _ = token.SignedString(config.ApiSecret)
+
+	return tokenString
+}
+
+func (u *User) GetAuthToken() (tokenString string) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	token.Claims["email"] = u.Email
+	token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	// Sign the JWT with the server secret
+	tokenString, err := token.SignedString([]byte(config.ApiSecret))
+
+	if err != nil {
+		log.Println("Error: ", err)
+	}
+
+	return tokenString
 }
 
 // CreateUser takes a user object and sets the proper fields
