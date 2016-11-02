@@ -11,6 +11,7 @@ import (
 )
 
 func initDatabase() {
+	log.Println("Auto Migrating Database")
 	var databaseName = config.DatabaseName
 	database.DB = database.InitDB(databaseName)
 
