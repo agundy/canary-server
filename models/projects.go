@@ -67,7 +67,7 @@ func CreateProject(p *Project) (newProject *Project, err error) {
 
 // DeleteProject takes a project ID and attempts to delete the corresponding
 // project from the database
-func DeleteProject(id int) (result string, err error) {
+func DeleteProject(id int, userID uint) (result string, err error) {
 
 	// Check that the project is in the database
 	project := Project{}
@@ -78,6 +78,11 @@ func DeleteProject(id int) (result string, err error) {
 		return "ERROR", errors.New("Project not found")
 	}
 
+	// Make sure the project belongs to the user signed in
+	if project.UserID != userID {
+		log.Println("Attempt to delete project not belonging to user in session")
+		return "ERROR", errors.New("Attempt to delete project not belonging to user in session")
+	}
 	// Delete the project
 	database.DB.Where("id = ?", id).Delete(Project{})
 	rs := string("Project ID=") + strconv.Itoa(id) + string(" deleted")

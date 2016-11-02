@@ -20,8 +20,9 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Handle error decoding JSON
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("error"))
+		w.Write([]byte("Error decoding JSON"))
 		return
 	}
 
@@ -63,8 +64,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(&loginUser)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("error"))
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error decoding JSON"))
 		return
 	}
 
@@ -74,7 +75,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("error"))
+		w.Write([]byte("Error logging in"))
 		return
 	}
 

@@ -44,19 +44,11 @@ func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 func EventHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	projectID, err := strconv.Atoi(vars["id"])
+	eventID, err := strconv.Atoi(vars["event_id"])
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Bad project ID"))
-		return
-	}
-
-	var eventID models.EventID
-	dec := json.NewDecoder(r.Body)
-	decErr := dec.Decode(&eventID)
-	if decErr != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Error decoding JSON"))
 		return
 	}
 

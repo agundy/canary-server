@@ -22,10 +22,6 @@ type Event struct {
 	Timestamp    time.Time `json:"timestamp"`
 }
 
-type EventID struct {
-	id int `json:"event_id"`
-}
-
 // StoreEvent takes an event object, verifies that the token matches the correct
 // ProjectID, then sets the proper fields and stores it in the database
 func StoreEvent(e *Event) (newEvent *Event, err error) {
@@ -56,7 +52,7 @@ func StoreEvent(e *Event) (newEvent *Event, err error) {
 	return newEvent, err
 }
 
-func GetEvent(projectID int, eventID EventID) (e *Event) {
+func GetEvent(projectID int, eventID int) (e *Event) {
 	event := Event{}
 	database.DB.Last(&event)
 	log.Println(event.Model.ID)
@@ -64,7 +60,7 @@ func GetEvent(projectID int, eventID EventID) (e *Event) {
 	if event.Model.ID < 1 {
 		return nil
 	}
-	if int(event.Model.ID) == eventID.id {
+	if int(event.Model.ID) == eventID {
 		return nil
 	}
 	log.Println(event.ProjectID, projectID)

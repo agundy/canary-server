@@ -18,8 +18,8 @@ import (
 // information and attempts to create a new project in the database with
 // this information
 func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
-	val := context.Get(r, config.RequestUser)
-	log.Println(val)
+	var user models.User
+	user = context.Get(r, config.RequestUser).(models.User)
 
 	var projectStruct models.Project
 
@@ -31,6 +31,8 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error decoding JSON"))
 		return
 	}
+
+	projectStruct.UserID = user.ID
 
 	// Attempt to create the project in the database
 	project, err := models.CreateProject(&projectStruct)
@@ -60,6 +62,9 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 // DeleteProjectHander takes a http request containing a project ID
 // and attempts to remove the corresponding project from the database
 func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+	user = context.Get(r, config.RequestUser).(models.User)
+
 	// Use mux to obtain the ID as an int
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -71,11 +76,10 @@ func DeleteProjectHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Attempt to delete the project
-	result, err := models.DeleteProject(id)
+	result, err := models.DeleteProject(id, user.ID)
 
 	// Send response with success or failure info
 	if err != nil {
-		log.Println(err)
 		w.WriteHeader(500)
 		w.Write([]byte("Error deleting project"))
 		return

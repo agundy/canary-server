@@ -58,19 +58,20 @@ func NewRouter() *mux.Router {
 	router.
 		Methods("DELETE").
 		Path("/api/project/{id:[0-9]+}").
-		HandlerFunc(controllers.DeleteProjectHandler)
+		Handler(AuthMiddleware(controllers.DeleteProjectHandler))
 	router.
 		Methods("PUT").
 		Path("/api/project/{id:[0-9]+}/regentoken").
-		HandlerFunc(controllers.RegenerateHandler)
+		Handler(AuthMiddleware(controllers.RegenerateHandler))
 	router.
 		Methods("PUT").
 		Path("/api/project/{id:[0-9]+}/storeevent").
 		HandlerFunc(controllers.StoreEventHandler)
 	router.
-		Methods("POST").
+		Methods("GET").
 		Path("/api/project/{id:[0-9]+}/event").
-		HandlerFunc(controllers.EventHandler)
+		Handler(AuthMiddleware(controllers.EventHandler))
+
 
 	return router
 }
