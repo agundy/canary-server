@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
+	"gopkg.in/dgrijalva/jwt-go.v2"
 
 	"github.com/agundy/canary-server/config"
 	"github.com/agundy/canary-server/controllers"

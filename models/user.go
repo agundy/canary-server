@@ -5,10 +5,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/dgrijalva/jwt-go.v2"
 
 	"github.com/agundy/canary-server/config"
 	"github.com/agundy/canary-server/database"
