@@ -27,10 +27,18 @@ func (p *Project) GenerateToken() {
 	rand.Seed(time.Now().UTC().UnixNano() + int64(p.UserID))
 	const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	result := make([]byte, 30)
+	var queryProject Project
 
-	// Generate each character
-	for i := 0; i < 30; i++ {
-		result[i] = chars[rand.Intn(len(chars))]
+	isUsed := true
+	for isUsed {	
+		// Generate each character
+		for i := 0; i < 30; i++ {
+			result[i] = chars[rand.Intn(len(chars))]
+		}
+		database.DB.Where(&Project{Token: string(result)}).First(&queryProject)
+		if queryProject.Name == "" {
+			isUsed = false
+		}
 	}
 
 	// Run with it
