@@ -64,6 +64,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(&loginUser)
 	if err != nil {
+		log.Println("Error reading body:", err)
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error decoding JSON"))
 		return
@@ -79,7 +81,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("Logged in User: ", user.Email)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(user.GetAuthToken()))
+	w.Write([]byte("{\"token\": \"" + user.GetAuthToken() + "\"}"))
 	return
 }
