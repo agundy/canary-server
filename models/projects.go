@@ -20,27 +20,37 @@ type Project struct {
 	Token      string `gorm:"index"`
 }
 
+const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+func MakeToken() (token string) {
+	result := make([]byte, 30)
+	for i := 0; i < 30; i++ {
+		result[i] = chars[rand.Intn(len(chars))]
+	}
+	log.Println(string(result))
+	return string(result)
+}
+
 // GenerateToken sets a new token for a project by randomly generating a 30
 // character alphanumeric sequence
 func (p *Project) GenerateToken() {
 	// Use seed based on time and projectID
 	rand.Seed(time.Now().UTC().UnixNano() + int64(p.UserID))
-	const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	result := make([]byte, 30)
 	var queryProject Project
-
 	isUsed := true
+	var result string
+
 	for isUsed {	
-		// Generate each character
-		for i := 0; i < 30; i++ {
-			result[i] = chars[rand.Intn(len(chars))]
-		}
-		database.DB.Where(&Project{Token: string(result)}).First(&queryProject)
+		//Generate each character
+		result = MakeToken()
+		log.Println(result)
+		database.DB.Where("token = ?", result).First(&queryProject)
 		if queryProject.Name == "" {
 			isUsed = false
 		}
 	}
 
+	log.Println(result)
 	// Run with it
 	p.Token = string(result)
 }
