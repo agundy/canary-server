@@ -27,7 +27,6 @@ func MakeToken() (token string) {
 	for i := 0; i < 30; i++ {
 		result[i] = chars[rand.Intn(len(chars))]
 	}
-	log.Println(string(result))
 	return string(result)
 }
 
@@ -40,17 +39,14 @@ func (p *Project) GenerateToken() {
 	isUsed := true
 	var result string
 
-	for isUsed {	
-		//Generate each character
+	for isUsed {
 		result = MakeToken()
-		log.Println(result)
 		database.DB.Where("token = ?", result).First(&queryProject)
 		if queryProject.Name == "" {
 			isUsed = false
 		}
 	}
-
-	log.Println(result)
+	
 	// Run with it
 	p.Token = string(result)
 }
