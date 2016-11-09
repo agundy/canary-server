@@ -46,7 +46,7 @@ func (p *Project) GenerateToken() {
 			isUsed = false
 		}
 	}
-	
+
 	// Run with it
 	p.Token = string(result)
 }
@@ -98,6 +98,7 @@ func DeleteProject(id int, userID uint) (result string, err error) {
 	}
 	// Delete the project
 	database.DB.Where("id = ?", id).Delete(Project{})
+	database.DB.Where("project_id = ?", id).Delete(Event{})
 	rs := string("Project ID=") + strconv.Itoa(id) + string(" deleted")
 	return rs, err
 

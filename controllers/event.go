@@ -22,6 +22,7 @@ func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(&incEvent)
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error decoding JSON"))
 		return
