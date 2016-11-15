@@ -20,17 +20,31 @@ type Project struct {
 	Token      string `gorm:"index"`
 }
 
+const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+func MakeToken() (token string) {
+	result := make([]byte, 30)
+	for i := 0; i < 30; i++ {
+		result[i] = chars[rand.Intn(len(chars))]
+	}
+	return string(result)
+}
+
 // GenerateToken sets a new token for a project by randomly generating a 30
 // character alphanumeric sequence
 func (p *Project) GenerateToken() {
 	// Use seed based on time and projectID
 	rand.Seed(time.Now().UTC().UnixNano() + int64(p.UserID))
-	const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	result := make([]byte, 30)
+	var queryProject Project
+	isUsed := true
+	var result string
 
-	// Generate each character
-	for i := 0; i < 30; i++ {
-		result[i] = chars[rand.Intn(len(chars))]
+	for isUsed {
+		result = MakeToken()
+		database.DB.Where("token = ?", result).First(&queryProject)
+		if queryProject.Name == "" {
+			isUsed = false
+		}
 	}
 
 	// Run with it
@@ -84,6 +98,7 @@ func DeleteProject(id int, userID uint) (result string, err error) {
 	}
 	// Delete the project
 	database.DB.Where("id = ?", id).Delete(Project{})
+	database.DB.Where("project_id = ?", id).Delete(Event{})
 	rs := string("Project ID=") + strconv.Itoa(id) + string(" deleted")
 	return rs, err
 

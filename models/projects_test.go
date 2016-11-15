@@ -7,11 +7,9 @@ import (
 )
 
 func TestProjectGenerateToken(t *testing.T) {
-	project := models.Project{}
+	token := models.MakeToken()
 
-	project.GenerateToken()
-
-	if len(project.Token) != 30 {
-		t.Errorf("Expected project token to have length 30 got length: %d", len(project.Token))
+	if len(token) != 30 {
+		t.Errorf("Expected project token to have length 30 got length: %d", len(token))
 	}
 }

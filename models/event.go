@@ -16,7 +16,7 @@ type Event struct {
 	Host         string    `json:"host"`
 	Code         int       `json:"code"`
 	Duration     int       `json:"duration"`
-	Endpoint     string    `json:"endpont"`
+	Endpoint     string    `json:"endpoint"`
 	ProjectID    int       `json:"project_id"`
 	ProjectToken string    `json:"token"`
 	Timestamp    time.Time `json:"timestamp"`
