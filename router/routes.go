@@ -14,7 +14,7 @@ import (
 	"github.com/agundy/canary-server/models"
 )
 
-// AuthMiddleware 
+// AuthMiddleware
 func AuthMiddleware(next http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Get jwt authorization header
@@ -51,6 +51,10 @@ func NewRouter() *mux.Router {
 		Methods("POST").
 		Path("/api/login").
 		HandlerFunc(controllers.LoginHandler)
+	router.
+		Methods("GET").
+		Path("/api/me").
+		Handler(AuthMiddleware(controllers.MeHandler))
 	router.
 		Methods("GET").
 		Path("/api/project").
