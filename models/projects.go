@@ -68,7 +68,7 @@ func CreateProject(p *Project) (newProject *Project, err error) {
 		log.Println("Found project: ", queryProject)
 		return nil, errors.New("Project already exists")
 	}
-
+	
 	// Create a new Project object and generate its API token
 	newProject = &Project{Name: p.Name, UserID: p.UserID}
 	newProject.GenerateToken()

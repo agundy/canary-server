@@ -146,6 +146,8 @@ func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Send response with success info
 	log.Println("Regenerated token for Project:", id)
+
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(project.Token))
+	w.Write([]byte("{\"token\": \"" + project.Token + "\"}"))
 }
