@@ -37,6 +37,10 @@ func AuthMiddleware(next http.HandlerFunc) http.Handler {
 	})
 }
 
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./canary-client/client/index.html")
+}
+
 // The router is responsible for maintianing API endpoints and passing
 // off incoming HTTP requests to their appropriate handler functions.
 // NewRouter creates such a router and adds appropriate endpoints.
@@ -80,8 +84,14 @@ func NewRouter() *mux.Router {
 		Path("/api/project/{id:[0-9]+}/event").
 		Handler(AuthMiddleware(controllers.EventHandler))
 	router.
-		PathPrefix("/").
+		PathPrefix("/app").
 		Handler(http.FileServer(http.Dir("./canary-client/client/")))
+	router.
+		PathPrefix("/static").
+		Handler(http.FileServer(http.Dir("./canary-client/client/")))
+	router.
+		PathPrefix("/").
+		HandlerFunc(indexHandler)
 
 	return router
 }
