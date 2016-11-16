@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/context"
+
+	"github.com/agundy/canary-server/config"
 	"github.com/agundy/canary-server/models"
 )
 
@@ -84,5 +87,22 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("{\"token\": \"" + user.GetAuthToken() + "\"}"))
+	return
+}
+
+// MeHandler
+func MeHandler(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+	user = context.Get(r, config.RequestUser).(models.User)
+
+	userJson, err := json.Marshal(user)
+	if err != nil {
+		log.Println("Error encoding user", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(userJson)
 	return
 }
