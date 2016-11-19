@@ -27,6 +27,7 @@ func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Could not find project with token")
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Invalid Token"))
+		return
 	}
 
 	// Obtain Event info from JSON

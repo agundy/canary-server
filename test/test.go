@@ -3,10 +3,12 @@ package test
 import (
 	"net/http"
 	"net/http/httptest"
-//	"testing"
+	"os"
+	"testing"
 
 	"github.com/agundy/canary-server/database"
 	"github.com/agundy/canary-server/router"
+	"github.com/agundy/canary-server/models"
 	"github.com/gorilla/mux"
 )
 
@@ -15,9 +17,10 @@ var (
 	testRouter *mux.Router
 	url        string
 	client     http.Client
+	server 
 )
 
-func init() {
+func Init() {
 	database.DB = database.InitDB(dbName)
 
 	testRouter = router.NewRouter()
@@ -27,8 +30,19 @@ func init() {
 	url = server.URL + "/api/"
 }
 
-// func TestSignUp(t *testing.T) {
-// 	init()
+func Teardown() {
+	//drop all tables 
+	database.DB.DropTable(&models.User{})
+	database.DB.DropTable(&models.Project{})
+	database.DB.DropTable(&models.Event{})
 
+	//server.Close()
+}
 
-// }
+func TestMain(m *testing.M) {
+	Init()
+	results := m.Run()
+	Teardown()
+	os.Exit(results)
+}
+
