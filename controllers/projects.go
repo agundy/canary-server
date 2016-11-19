@@ -56,6 +56,7 @@ func CreateProjectHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Created Project: ", project.Name)
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	w.Write(rs)
 	return
@@ -110,6 +111,7 @@ func GetProjectsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonProjects)
 	return
@@ -146,7 +148,6 @@ func RegenerateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Send response with success info
 	log.Println("Regenerated token for Project:", id)
-
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("{\"token\": \"" + project.Token + "\"}"))
