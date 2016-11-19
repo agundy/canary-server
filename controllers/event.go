@@ -67,7 +67,10 @@ func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 
 func EventHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	projectID, err := strconv.Atoi(vars["id"])
+	lastEventId := r.URL.Query().Get("event_id")
+	log.Println(lastEventId)
+
+	projectID, err := strconv.Atoi(lastEventId)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
