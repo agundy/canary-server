@@ -76,8 +76,8 @@ func NewRouter() *mux.Router {
 		Path("/api/project/{id:[0-9]+}/regentoken").
 		Handler(AuthMiddleware(controllers.RegenerateHandler))
 	router.
-		Methods("PUT").
-		Path("/api/project/{id:[0-9]+}/storeevent").
+		Methods("POST").
+		Path("/api/event").
 		HandlerFunc(controllers.StoreEventHandler)
 	router.
 		Methods("GET").

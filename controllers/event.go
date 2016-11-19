@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/agundy/canary-server/database"
 	"github.com/agundy/canary-server/models"
 )
 
@@ -17,6 +18,16 @@ import (
 func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 	var incEvent models.Event
 	log.Println("Processing event: ", r.Body)
+	token := r.Header.Get("CANARY_TOKEN")
+
+	project := models.Project{}
+	database.DB.Where("token = ?", token).
+		First(&project)
+	if project.Name == "" {
+		log.Println("Could not find project with token")
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Invalid Token"))
+	}
 
 	// Obtain Event info from JSON
 	dec := json.NewDecoder(r.Body)
@@ -28,18 +39,29 @@ func StoreEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	incEvent.ProjectID = project.ID
+
 	// Attempt to store the Event in the database
 	event, err := models.StoreEvent(&incEvent)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Error saving event"))
 		return
 	}
 
 	log.Println("Created new event: ", event.ID)
 
+	eventJson, err := json.Marshal(event)
+	if err != nil {
+		log.Println("Error encoding event", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	// Send an awknowledge response
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
+	w.Write(eventJson)
 	return
 }
 
