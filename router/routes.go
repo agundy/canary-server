@@ -57,7 +57,7 @@ func NewRouter() *mux.Router {
 		HandlerFunc(controllers.LoginHandler)
 	router.
 		Methods("GET").
-		Path("/api/me").
+		Path("/api/user/me").
 		Handler(AuthMiddleware(controllers.MeHandler))
 	router.
 		Methods("GET").
