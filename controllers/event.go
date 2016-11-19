@@ -70,7 +70,7 @@ func EventHandler(w http.ResponseWriter, r *http.Request) {
 	lastEventId := r.URL.Query().Get("event_id")
 	log.Println(lastEventId)
 
-	projectID, err := strconv.Atoi(lastEventId)
+	projectID, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -78,7 +78,7 @@ func EventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	eventID, err := strconv.Atoi(vars["event_id"])
+	eventID, err := strconv.Atoi(lastEventId)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
