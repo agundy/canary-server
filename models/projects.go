@@ -63,7 +63,7 @@ func CreateProject(p *Project) (newProject *Project, err error) {
 	}
 
 	// Check if a project with given name is already in database
-	database.DB.Where(&Project{Name: p.Name}).First(&queryProject)
+	database.DB.Where(&Project{Name: p.Name, UserID: p.UserID}).First(&queryProject)
 	if queryProject.Name != "" {
 		log.Println("Found project: ", queryProject)
 		return nil, errors.New("Project already exists")
