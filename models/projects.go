@@ -5,7 +5,6 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"math/rand"
 	"time"
@@ -14,10 +13,10 @@ import (
 )
 
 type Project struct {
-	gorm.Model `json:"-"`
-	Name       string `json:"name"`
-	UserID     uint   `json:"user_id";gorm:"index"`
-	Token      string `gorm:"index"`
+	ID     uint   `json:"id";gorm:"primary_key";`
+	Name   string `json:"name"`
+	UserID uint   `json:"user_id";gorm:"index"`
+	Token  string `gorm:"index"`
 }
 
 const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -68,7 +67,7 @@ func CreateProject(p *Project) (newProject *Project, err error) {
 		log.Println("Found project: ", queryProject)
 		return nil, errors.New("Project already exists")
 	}
-	
+
 	// Create a new Project object and generate its API token
 	newProject = &Project{Name: p.Name, UserID: p.UserID}
 	newProject.GenerateToken()
