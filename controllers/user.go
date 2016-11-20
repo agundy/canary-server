@@ -78,8 +78,21 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := models.LoginUser(&loginUser)
 
 	if err != nil {
+		// User not in database
+		if err.Error() == "User not found" {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("User does not exist"))
+			return
+		}
+		// Password does not match given user
+		if err.Error() == "Incorrect password" {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Incorrect password"))
+			return
+		}
+		// Unexpected issue occured
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error logging in"))
+		w.Write([]byte("Unexpected error logging in"))
 		return
 	}
 
