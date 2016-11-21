@@ -5,20 +5,17 @@ import (
 	"log"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-
 	"github.com/agundy/canary-server/database"
 )
 
 type Event struct {
-	gorm.Model `json:"-"`
-	Host       string    `json:"host"`
-	Code       int       `json:"code"`
-	Duration   int       `json:"duration"`
-	Endpoint   string    `json:"endpoint"`
-	ProjectID  uint      `json:"project_id"`
-	Timestamp  time.Time `json:"timestamp"`
+	ID        uint      `json:"id";gorm:"primary_key";`
+	Host      string    `json:"host"`
+	Code      int       `json:"code"`
+	Duration  int       `json:"duration"`
+	Endpoint  string    `json:"endpoint"`
+	ProjectID uint      `json:"project_id"`
+	Timestamp time.Time `json:"timestamp"`
 }
 
 // StoreEvent takes an event object, verifies that the token matches the correct
@@ -55,10 +52,10 @@ func GetEvent(projectID int, eventID int) (e *Event) {
 	event := Event{}
 	database.DB.Last(&event)
 	// Conditions separated for debugging purposes
-	if event.Model.ID < 1 {
+	if event.ID < 1 {
 		return nil
 	}
-	if event.Model.ID == uint(eventID) {
+	if event.ID == uint(eventID) {
 		return nil
 	}
 	if event.ProjectID != uint(projectID) {
