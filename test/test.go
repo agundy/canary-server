@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/agundy/canary-server/database"
-	"github.com/agundy/canary-server/router"
 	"github.com/agundy/canary-server/models"
+	"github.com/agundy/canary-server/router"
 	"github.com/gorilla/mux"
 )
 
@@ -17,7 +17,6 @@ var (
 	testRouter *mux.Router
 	url        string
 	client     http.Client
-	server 
 )
 
 func Init() {
@@ -31,7 +30,7 @@ func Init() {
 }
 
 func Teardown() {
-	//drop all tables 
+	//drop all tables
 	database.DB.DropTable(&models.User{})
 	database.DB.DropTable(&models.Project{})
 	database.DB.DropTable(&models.Event{})
@@ -45,4 +44,3 @@ func TestMain(m *testing.M) {
 	Teardown()
 	os.Exit(results)
 }
-

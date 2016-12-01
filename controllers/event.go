@@ -97,11 +97,17 @@ func EventHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("Event retrieved")
+		if rs == nil {
+			log.Println("nil event")
+		}
+
+		log.Println("Event retrieved: response=", rs)
 
 		w.WriteHeader(http.StatusOK)
 		w.Write(rs)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(""))
 	return
 }

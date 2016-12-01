@@ -23,7 +23,6 @@ func AuthMiddleware(next http.HandlerFunc) http.Handler {
 			return []byte(config.ApiSecret), nil
 		})
 		if err == nil && token.Valid {
-			log.Println(token.Claims)
 			user := models.User{}
 			database.DB.Where("email = ?", token.Claims["email"]).Find(&user)
 			context.Set(r, config.RequestUser, user)
