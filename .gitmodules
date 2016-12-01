@@ -1,3 +1,4 @@
 [submodule "canary-client"]
 	path = canary-client
 	url = https://github.com/agundy/canary-client
+    branch = master
